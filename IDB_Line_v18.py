@@ -1,5 +1,5 @@
 import datetime
-import os, time, threading, sys
+import os, time, threading, sys, traceback
 import tkinter as tk
 from tkinter import ttk
 import PIL
@@ -178,7 +178,7 @@ class IDB_Printer_Line(tk.Frame):
                     csv.to_csv(self.data_file)
                 self.gfile.SetContentFile(self.data_file)
                 self.gfile.Upload()
-                self.end_of_day = datetime.datetime(datetime.datetime(year=datetime.datetime.now().year, month=datetime.datetime.now().month, day=datetime.datetime.now().day, hour=23,minute=59, second=59))
+                self.end_of_day = datetime.datetime(year=datetime.datetime.now().year, month=datetime.datetime.now().month, day=datetime.datetime.now().day, hour=23,minute=59, second=59)
                 self.file_date = self.end_of_day.strftime("%m-%d-%Y")
                 self.data_file = f'IDB_Line_data_{self.file_date}.csv'
                 for f in self.label_place:
@@ -255,12 +255,12 @@ class IDB_Printer_Line(tk.Frame):
                                                     break
                                                 except ValueError:
                                                     continue
-                                            for c in range(len(list_of_lines)):
-                                                try:
-                                                    self.start_dic[printer] = datetime.datetime.strptime(list_of_lines[-c][7:30], "%Y-%m-%d_%H:%M:%S.%f")
-                                                    break
-                                                except ValueError:
-                                                    continue
+                                        for c in range(len(list_of_lines)):
+                                            try:
+                                                self.start_dic[printer] = datetime.datetime.strptime(list_of_lines[-c][7:30], "%Y-%m-%d_%H:%M:%S.%f")
+                                                break
+                                            except ValueError:
+                                                continue
                                         # update_data
                                         self.status_dic[printer] = "Active"
                                         self.data_dic[printer]['Time'].append(str(self.start_dic[printer]))
@@ -426,10 +426,11 @@ class IDB_Printer_Line(tk.Frame):
                                         break
                                     except ValueError:
                                         continue
-                                self.print_count_dic[printer]+=1
+
                                 print(f"{printer},Job: {self.job_dic[printer]}, started at:{t_start}, print count: {self.print_count_dic[printer]}")
                                 if t_start > end_time:
                                     runtime = t_finish - t_start
+                                    self.print_count_dic[printer] += 1
                                     #update_data
                                     self.uptime_dic[printer] = self.uptime_dic[printer] + runtime
                                     self.data_dic[printer]['Time'].append(str(t_start))
@@ -452,6 +453,7 @@ class IDB_Printer_Line(tk.Frame):
                                 print(f'{len(list_of_lines)} Lines')
                                 del list_of_lines
                                 break
+
                             buffer = bytearray()
                         else:
                             # If last read character is not eol then add it in buffer
