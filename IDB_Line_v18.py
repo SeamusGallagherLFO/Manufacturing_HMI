@@ -207,8 +207,10 @@ class IDB_Printer_Line(tk.Frame):
                                 pointer_location = pointer_location - 1
                                 new_byte = f.read(1)
                                 if new_byte == b'\n':
-
-                                    list_of_lines.append(buffer.decode()[::-1])
+                                    try:
+                                        list_of_lines.append(buffer.decode()[::-1])
+                                    except UnicodeDecodeError:
+                                        'bad byte'
                                     if self.time_offset[printer][0]=='':
                                         for c in range(len(list_of_lines)):
                                             try:
@@ -235,8 +237,15 @@ class IDB_Printer_Line(tk.Frame):
                                             print("JOB RESTARTED")
                                             self.uptime_dic[printer]=self.uptime_dic[printer] + self.runtime_dic[printer]
                                             print(self.uptime_dic[printer])
+                                            self.print_count_dic[printer]+=1
                                         self.status_dic[printer] = 'Inactive'
-                                        self.start_dic[printer] = datetime.datetime.strptime(list_of_lines[-4][7:30], "%Y-%m-%d_%H:%M:%S.%f") #Log date format: 2022-02-03_19:29:11.321datetime.datetime.now()
+                                        for c in range(len(list_of_lines)):
+                                            try:
+                                                self.start_dic[printer] = datetime.datetime.strptime(list_of_lines[-c][7:30], "%Y-%m-%d_%H:%M:%S.%f")
+                                                break
+                                            except ValueError:
+                                                continue
+                                        #self.start_dic[printer] = datetime.datetime.strptime(list_of_lines[-4][7:30], "%Y-%m-%d_%H:%M:%S.%f") #Log date format: 2022-02-03_19:29:11.321datetime.datetime.now()
                                         self.job_dic[printer] = ''
                                         # update_data
                                         self.data_dic[printer]['Time'].append(str(self.start_dic[printer]))
@@ -361,6 +370,10 @@ class IDB_Printer_Line(tk.Frame):
             time.sleep(50)
 
     def initial_read(self):
+        csv = pd.DataFrame.from_dict(self.data_dic)
+        csv.to_csv(self.data_file)
+        self.gfile.SetContentFile(self.data_file)
+        self.gfile.Upload()
         for printer in self.label_place:
             t_finish, t_start,recent_time='','',''
 
