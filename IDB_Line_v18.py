@@ -69,6 +69,7 @@ class IDB_Printer_Line(tk.Frame):
         self.font_clock = ImageFont.truetype("arial.ttf",30)
         self.font = ImageFont.truetype("arial.ttf", 17)
         self.font_box = ImageFont.truetype("arial.ttf", 10)
+        self.font_info = ImageFont.truetype("arial.ttf", 15)
         self.original = Image.open("Images/Print_line_flip.jpg")
         self.bx, self.by = self.original.size
         self.background = self.original.copy()
@@ -509,6 +510,21 @@ class IDB_Printer_Line(tk.Frame):
             self.image.text((self.box_place[box][0], self.box_place[box][1]),
                             f'{status}: {case_string}',
                             fill=self.rgb, font = self.font_box)
+        boxtext = ''
+        for printer in self.IP_dic:
+            results = self.jira.search_issues(f'project = MFG AND issuetype = MakeIDB AND "Order Status[Dropdown]" = Active AND status in ("Ready to Print", "Print Next", "Vida Print Start") AND "IDB Tray Printer Id[Dropdown]" = {printer} AND (labels is EMPTY OR labels not in (test_treatment, duplicate_tx, cancelled_order, shop_order)) ORDER BY status DESC')
+            filelist=[]
+            for case in results:
+                filename=str(getattr(case.fields, self.nameMap["IDB Print File Name"]))
+                print(filename,case)
+                if filename not in filelist:
+                    filelist.append(filename)
+
+            boxtext += f'{printer} Available Prints: {len(filelist)}\n'
+
+        self.image.text(self.info_box_place,
+                        boxtext,
+                        fill=self.rgb, font=self.font_info)
             #self.strvar_dic[box].set(f'{status}: {case_string}')
 
 
