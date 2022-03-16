@@ -398,6 +398,7 @@ class IDB_Printer_Line(tk.Frame):
                             except UnicodeDecodeError as e:
                                 print('bad buffer????')
                             line = list_of_lines[-1]
+                            buffer = bytearray()
                             if f_line:
                                 try:
                                     recent_time = datetime.datetime.strptime(line[7:30],"%Y-%m-%d_%H:%M:%S.%f")

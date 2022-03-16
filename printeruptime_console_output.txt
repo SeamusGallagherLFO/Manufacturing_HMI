@@ -1,0 +1,164 @@
+C:\Users\ops\AppData\Local\Programs\Python\Python39\python.exe C:/Users/ops/OneDrive/Documents/GitHub/Manufacturing_HMI/IDB_Printer_UPTime_live.py
+IDB-PT-07 \\192.168.1.241/log/dlpcs_core.log
+check2
+IDB-PT-07,Job: S7VI3-auto, started at:2022-03-15 19:55:53.680000, print count: 0
+IDB-PT-07,Job: PK6CW-auto, started at:2022-03-15 19:19:11.606000, print count: 1
+IDB-PT-07,Job: PGZU6-O9E29, started at:2022-03-15 17:05:41.639000, print count: 2
+IDB-PT-07,Job: LZPMB-ZJSKR, started at:2022-03-15 16:27:32.147000, print count: 3
+IDB-PT-07,Job: A86FG-4LOIT, started at:2022-03-15 15:35:37.196000, print count: 4
+IDB-PT-07,Job: WX73M-auto, started at:2022-03-15 14:56:22.083000, print count: 5
+IDB-PT-07,Job: 4C4NV-FBXNA, started at:2022-03-15 14:18:45.063000, print count: 6
+IDB-PT-07,Job: L97FI-auto, started at:2022-03-15 13:30:15.883000, print count: 7
+IDB-PT-07,Job: 3TRRX-auto, started at:2022-03-15 12:53:21.715000, print count: 8
+IDB-PT-07,Job: 7FJGY-auto, started at:2022-03-15 12:16:53.159000, print count: 9
+IDB-PT-07,Job: 37HYT-auto, started at:2022-03-15 11:43:44.966000, print count: 10
+IDB-PT-07,Job: F2MSW-auto, started at:2022-03-15 11:06:37.548000, print count: 11
+IDB-PT-07,Job: IKCFZ-auto, started at:2022-03-15 10:30:01.567000, print count: 12
+IDB-PT-07,Job: 4VPGV-auto, started at:2022-03-15 08:52:14.167000, print count: 13
+finish initial read IDB-PT-07 Uptime:  6:46:12.030000
+read until time:  2022-03-15 08:52:14.167000 from:  2022-03-15 20:37:06.819000 should be before:  2022-03-15 09:29:59.327853
+3 Lines
+IDB-PT-08 \\192.168.1.122/log/dlpcs_core.log
+check2
+IDB-PT-08,Job: OQ+L, started at:2022-03-14 22:13:07.829000, print count: 0
+finish initial read IDB-PT-08 Uptime:  0:00:00
+read until time:  2022-03-14 22:13:07.829000 from:  2022-03-15 19:33:00.893000 should be before:  2022-03-15 08:25:53.401853
+3 Lines
+IDB-PT-09 \\192.168.1.163/log/dlpcs_core.log
+check2
+IDB-PT-09,Job: 54GYT-auto, started at:2022-03-15 19:52:23.269000, print count: 0
+IDB-PT-09,Job: CL5XK-auto, started at:2022-03-15 19:18:41.686000, print count: 1
+IDB-PT-09,Job: MEATL-auto, started at:2022-03-15 18:18:41.822000, print count: 2
+IDB-PT-09,Job: 7I4T6-auto, started at:2022-03-15 17:42:00.823000, print count: 3
+IDB-PT-09,Job: YFJUN-auto, started at:2022-03-15 17:08:00.439000, print count: 4
+IDB-PT-09,Job: 2RIUM-auto, started at:2022-03-15 16:30:12.166000, print count: 5
+IDB-PT-09,Job: 3J59W-auto, started at:2022-03-15 15:45:16.663000, print count: 6
+IDB-PT-09,Job: F96DT-auto, started at:2022-03-15 15:03:12.399000, print count: 7
+IDB-PT-09,Job: XNUIW-auto, started at:2022-03-15 14:28:39.311000, print count: 8
+IDB-PT-09,Job: DMJPN-auto, started at:2022-03-15 13:50:09.791000, print count: 9
+IDB-PT-09,Job: 343VO-auto, started at:2022-03-15 13:06:17.791000, print count: 10
+IDB-PT-09,Job: P4ZYZ-auto, started at:2022-03-15 12:24:21.828000, print count: 11
+IDB-PT-09,Job: 7V798-auto, started at:2022-03-15 11:48:35.162000, print count: 12
+IDB-PT-09,Job: LBZ5P-auto, started at:2022-03-15 11:12:07.743000, print count: 13
+IDB-PT-09,Job: SFQI2-auto, started at:2022-03-15 10:24:38.122000, print count: 14
+IDB-PT-09,Job: 2SKUK-auto, started at:2022-03-15 08:47:45.476000, print count: 15
+finish initial read IDB-PT-09 Uptime:  7:55:05.807000
+read until time:  2022-03-15 08:47:45.476000 from:  2022-03-15 20:37:38.962000 should be before:  2022-03-15 09:30:31.470853
+3 Lines
+IDB-PT-11 \\192.168.1.178/log/dlpcs_core.log
+check2
+IDB-PT-11,Job: YFJUN-auto, started at:2022-03-15 19:50:48.830000, print count: 0
+IDB-PT-11,Job: KTN7Z-auto, started at:2022-03-15 19:18:30.326000, print count: 1
+IDB-PT-11,Job: 8JJBN-auto, started at:2022-03-15 18:23:36.378000, print count: 2
+IDB-PT-11,Job: DWZJN-auto, started at:2022-03-15 17:43:59.304000, print count: 3
+IDB-PT-11,Job: H9TOB-auto, started at:2022-03-15 17:10:34.330000, print count: 4
+IDB-PT-11,Job: 7Y38L-auto, started at:2022-03-15 16:31:56.882000, print count: 5
+IDB-PT-11,Job: QSLGX-auto, started at:2022-03-15 15:48:21.949000, print count: 6
+IDB-PT-11,Job: HYL4A-auto, started at:2022-03-15 15:09:15.019000, print count: 7
+IDB-PT-11,Job: KL2Z6-auto, started at:2022-03-15 14:31:43.318000, print count: 8
+IDB-PT-11,Job: K782U-auto, started at:2022-03-15 13:52:40.886000, print count: 9
+IDB-PT-11,Job: YFJUN-auto, started at:2022-03-15 13:02:27.858000, print count: 10
+IDB-PT-11,Job: SCI6G-auto, started at:2022-03-15 12:19:57.334000, print count: 11
+IDB-PT-11,Job: BIKY9-auto, started at:2022-03-15 11:48:14.358000, print count: 12
+IDB-PT-11,Job: SXOP9-auto, started at:2022-03-15 11:11:51.842000, print count: 13
+IDB-PT-11,Job: KRJM6-auto, started at:2022-03-15 10:27:37.422000, print count: 14
+IDB-PT-11,Job: Z4CQO-auto, started at:2022-03-15 08:49:54.962000, print count: 15
+finish initial read IDB-PT-11 Uptime:  7:51:29.902000
+read until time:  2022-03-15 08:49:54.962000 from:  2022-03-15 20:38:13.169000 should be before:  2022-03-15 09:31:05.677853
+3 Lines
+IDB-PT-12 \\192.168.1.186/log/dlpcs_core.log
+check2
+IDB-PT-12,Job: 556XZ-auto, started at:2022-03-15 19:54:20.908000, print count: 0
+IDB-PT-12,Job: GSK2A-auto, started at:2022-03-15 19:19:39.824000, print count: 1
+IDB-PT-12,Job: BWC4O-auto, started at:2022-03-15 17:29:47.912000, print count: 2
+IDB-PT-12,Job: TZUQJ-auto, started at:2022-03-15 15:44:16.060000, print count: 3
+IDB-PT-12,Job: RHQIC-auto, started at:2022-03-15 14:16:36.855000, print count: 4
+IDB-PT-12,Job: O8RFS-auto, started at:2022-03-15 13:26:02.915000, print count: 5
+IDB-PT-12,Job: GWCUF-auto, started at:2022-03-15 12:42:55.749000, print count: 6
+IDB-PT-12,Job: AV6OW-auto, started at:2022-03-15 12:08:21.816000, print count: 7
+IDB-PT-12,Job: 7YVOR-auto, started at:2022-03-15 11:33:15.406000, print count: 8
+IDB-PT-12,Job: 4VXNP-auto, started at:2022-03-14 22:06:23.811000, print count: 9
+finish initial read IDB-PT-12 Uptime:  4:44:19.766000
+read until time:  2022-03-14 22:06:23.811000 from:  2022-03-15 20:38:49.964000 should be before:  2022-03-15 09:31:42.472853
+3 Lines
+IDB-PT-13 \\192.168.1.185/log/dlpcs_core.log
+check2
+IDB-PT-13,Job: PHMHX-NR5ZU, started at:2022-03-15 16:12:27.396000, print count: 0
+IDB-PT-13,Job: IRE6B-K5TOT, started at:2022-03-15 15:31:16.432000, print count: 1
+IDB-PT-13,Job: 8XQ5L-ABGSW, started at:2022-03-15 14:49:57.340000, print count: 2
+IDB-PT-13,Job: ACZQE-N43MY, started at:2022-03-15 14:12:27.092000, print count: 3
+IDB-PT-13,Job: 8GTBT-D7PSK, started at:2022-03-15 13:21:53.445000, print count: 4
+IDB-PT-13,Job: B9LOC-FIMLZ, started at:2022-03-15 12:48:38.400000, print count: 5
+IDB-PT-13,Job: H0BKV-UAZSJ, started at:2022-03-15 12:11:10.482000, print count: 6
+IDB-PT-13,Job: CDDGS-WBO84, started at:2022-03-15 11:35:51.382000, print count: 7
+IDB-PT-13,Job: 7MOHR-HIUPE, started at:2022-03-15 09:08:24.356000, print count: 8
+finish initial read IDB-PT-13 Uptime:  4:19:10.883000
+read until time:  2022-03-15 09:08:24.356000 from:  2022-03-15 20:38:54.140000 should be before:  2022-03-15 09:31:46.648853
+3 Lines
+IDB-PT-14 \\192.168.1.45/log/dlpcs_core.log
+check2
+IDB-PT-14,Job: DFWPA-XLGGP, started at:2022-03-15 16:18:10.129000, print count: 0
+IDB-PT-14,Job: NT4TV-RZOQE, started at:2022-03-15 15:36:41.999000, print count: 1
+IDB-PT-14,Job: 2VLU7-E7DM5, started at:2022-03-15 14:32:37.095000, print count: 2
+IDB-PT-14,Job: 6L9HS-D43TD, started at:2022-03-15 13:16:26.531000, print count: 3
+IDB-PT-14,Job: T23QI-UWH5M, started at:2022-03-15 12:30:45.529000, print count: 4
+IDB-PT-14,Job: I52UK-UWH5M, started at:2022-03-15 11:53:38.573000, print count: 5
+IDB-PT-14,Job: BHVSA-ELFNA, started at:2022-03-15 10:59:46, print count: 6
+IDB-PT-14,Job: C4GII-U2LC7, started at:2022-03-15 09:00:04.547000, print count: 7
+IDB-PT-14,Job: IM95L-SGTKV, started at:2022-03-15 07:43:46.128000, print count: 8
+finish initial read IDB-PT-14 Uptime:  4:06:42.758000
+read until time:  2022-03-15 07:43:46.128000 from:  2022-03-15 19:24:20.603000 should be before:  2022-03-15 08:17:13.111853
+3 Lines
+IDB-PT-15 \\192.168.1.138/log/dlpcs_core.log
+check2
+IDB-PT-15,Job: FO38I-auto, started at:2022-03-15 18:28:34.259000, print count: 0
+IDB-PT-15,Job: 7UDQS-auto, started at:2022-03-15 17:26:15.863000, print count: 1
+IDB-PT-15,Job: F96DT-auto, started at:2022-03-15 16:45:46.346000, print count: 2
+IDB-PT-15,Job: 5HFBQ-auto, started at:2022-03-15 16:08:32.304000, print count: 3
+IDB-PT-15,Job: IVLO6-auto, started at:2022-03-15 15:26:22.132000, print count: 4
+IDB-PT-15,Job: ABPQE-auto, started at:2022-03-15 14:46:40.721000, print count: 5
+IDB-PT-15,Job: 8PEDY-auto, started at:2022-03-15 14:08:14.758000, print count: 6
+IDB-PT-15,Job: 8YS5C-auto, started at:2022-03-15 13:12:49.450000, print count: 7
+IDB-PT-15,Job: U28YU-auto, started at:2022-03-15 12:33:10.168000, print count: 8
+IDB-PT-15,Job: 6WUVD-auto, started at:2022-03-15 12:00:28.282000, print count: 9
+IDB-PT-15,Job: C5CYC-auto, started at:2022-03-15 11:21:26.896000, print count: 10
+IDB-PT-15,Job: BQVE6-auto, started at:2022-03-15 10:42:33.206000, print count: 11
+IDB-PT-15,Job: TFKP7-auto, started at:2022-03-15 09:05:11.646000, print count: 12
+finish initial read IDB-PT-15 Uptime:  6:18:32.648000
+read until time:  2022-03-15 09:05:11.646000 from:  2022-03-15 20:38:07.986000 should be before:  2022-03-15 09:31:00.494853
+3 Lines
+IDB-PT-16 \\192.168.1.93/log/dlpcs_core.log
+check2
+IDB-PT-16,Job: BQUK7-auto, started at:2022-03-15 18:28:49.323000, print count: 0
+IDB-PT-16,Job: VJSI9-auto, started at:2022-03-15 17:28:58.754000, print count: 1
+IDB-PT-16,Job: 7V798-auto, started at:2022-03-15 16:43:57.811000, print count: 2
+IDB-PT-16,Job: 37HYT-auto, started at:2022-03-15 16:05:31.753000, print count: 3
+IDB-PT-16,Job: XWG87-auto, started at:2022-03-15 15:28:12.732000, print count: 4
+IDB-PT-16,Job: IWDB7-auto, started at:2022-03-15 14:43:49.105000, print count: 5
+IDB-PT-16,Job: OJ4HL-auto, started at:2022-03-15 14:05:21.789000, print count: 6
+IDB-PT-16,Job: 6DEHQ-auto, started at:2022-03-15 13:19:06.265000, print count: 7
+IDB-PT-16,Job: JBA22-auto, started at:2022-03-15 12:46:13.348000, print count: 8
+IDB-PT-16,Job: TFKP7-auto, started at:2022-03-15 12:12:50.795000, print count: 9
+IDB-PT-16,Job: RA6ND-XTIEM, started at:2022-03-15 11:19:16.949000, print count: 10
+IDB-PT-16,Job: 6LC8P-SFNLT, started at:2022-03-15 10:42:08.359000, print count: 11
+IDB-PT-16,Job: 8XQ5L-D43TD, started at:2022-03-15 09:02:53.917000, print count: 12
+finish initial read IDB-PT-16 Uptime:  6:17:26.521000
+read until time:  2022-03-15 09:02:53.917000 from:  2022-03-15 20:36:12.271000 should be before:  2022-03-15 09:29:04.779853
+3 Lines
+IDB-PT-17 \\192.168.1.128/log/dlpcs_core.log
+check2
+IDB-PT-17,Job: FJ2C9-auto, started at:2022-03-15 19:44:30.089000, print count: 0
+IDB-PT-17,Job: DU9TH-auto, started at:2022-03-15 17:24:04.238000, print count: 1
+IDB-PT-17,Job: A5DIM-auto, started at:2022-03-15 16:41:54.120000, print count: 2
+IDB-PT-17,Job: 54GYT-auto, started at:2022-03-15 16:02:50.557000, print count: 3
+IDB-PT-17,Job: MEATL-auto, started at:2022-03-15 15:27:29.676000, print count: 4
+IDB-PT-17,Job: CUBES +L, started at:2022-03-15 14:57:22.928000, print count: 5
+IDB-PT-17,Job: 54GYT-auto, started at:2022-03-15 13:09:55.109000, print count: 6
+IDB-PT-17,Job: 5FSCG-auto, started at:2022-03-15 12:27:32.160000, print count: 7
+IDB-PT-17,Job: BQUK7-auto, started at:2022-03-15 11:54:16.074000, print count: 8
+IDB-PT-17,Job: 7I4T6-auto, started at:2022-03-15 11:16:49.012000, print count: 9
+IDB-PT-17,Job: 7QLOW-auto, started at:2022-03-15 10:34:15.606000, print count: 10
+IDB-PT-17,Job: AOUAK-auto, started at:2022-03-15 08:57:36.163000, print count: 11
+finish initial read IDB-PT-17 Uptime:  5:17:23.110000
+read until time:  2022-03-15 08:57:36.163000 from:  2022-03-15 20:41:17.161000 should be before:  2022-03-15 09:34:09.669853
+3 Lines
