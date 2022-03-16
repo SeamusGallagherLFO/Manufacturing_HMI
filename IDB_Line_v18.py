@@ -15,10 +15,10 @@ from pydrive.drive import GoogleDrive
 class IDB_Printer_Line(tk.Frame):
     def __init__(self, parent, image = None, dirs=['Input',],extension='.tif'):
         tk.Frame.__init__(self)
-        self.IP_dic = {'IDB-PT-04': '192.168.1.78',
-                       'IDB-PT-05': '192.168.1.33',
+        self.IP_dic = {#'IDB-PT-04': '192.168.1.78',
+                       #'IDB-PT-05': '192.168.1.33',
                        'IDB-PT-07': '192.168.1.241',
-                       'IDB-PT-08': '192.168.1.122',
+                       #'IDB-PT-08': '192.168.1.122',
                        'IDB-PT-09': '192.168.1.163',
                        'IDB-PT-11': '192.168.1.178',
                        'IDB-PT-12': '192.168.1.186',
@@ -69,7 +69,7 @@ class IDB_Printer_Line(tk.Frame):
         self.font_clock = ImageFont.truetype("arial.ttf",30)
         self.font = ImageFont.truetype("arial.ttf", 17)
         self.font_box = ImageFont.truetype("arial.ttf", 10)
-        self.original = Image.open("Images/IDB_Floor_Layout.jpg")
+        self.original = Image.open("Images/Print_line_flip.jpg")
         self.bx, self.by = self.original.size
         self.background = self.original.copy()
         self.image = ImageDraw.Draw(self.background)
@@ -79,17 +79,17 @@ class IDB_Printer_Line(tk.Frame):
         self.canv.grid(column=4, row=3)
          #self.canv.create_image(0, 0, image=self.background)
         self.canv.create_image(1, 1, image=self.interface, anchor="nw")
-        self.label_place = {'IDB-PT-05': [1093, 85],
-                            'IDB-PT-08': [916, 185],
-                            'IDB-PT-07': [743, 185],
-                            'IDB-PT-09': [916, 85],
-                            'IDB-PT-11': [741, 84],
-                            'IDB-PT-12': [1095, 185],
-                            'IDB-PT-13': [746, 439],
-                           # 'IDB-PT-04':[921, 540],
-                            'IDB-PT-14':[744, 540],
-                            'IDB-PT-15':[921, 439],
-                            'IDB-PT-16':[1098, 439],
+        self.label_place = {'IDB-PT-11': [750, 83],
+                            'IDB-PT-09': [923, 83],
+                            'IDB-PT-05': [1100, 83],
+                            'IDB-PT-07': [750, 185],
+                            'IDB-PT-08': [923, 185],
+                            'IDB-PT-12': [1100, 185],
+                            'IDB-PT-13': [750, 435],
+                            'IDB-PT-15': [928, 435],
+                            'IDB-PT-16': [1107, 435],
+                            'IDB-PT-14': [754, 538],
+                           # 'IDB-PT-04':[928, 538],
                             'IDB-PT-17':[1100, 538]
                             }
         self.dot_place = {'IDB-PT-05': [1104, 36],
@@ -103,16 +103,16 @@ class IDB_Printer_Line(tk.Frame):
                           'IDB-PT-14': [761, 669],
                           'IDB-PT-15': [926, 391],
                           'IDB-PT-16': [1104, 391],
-                          'IDB-PT-17': [1110, 669]
+                          'IDB-PT-17': [1117, 669]
                           }
-        self.box_place = {'Box1':[539, 596],
-                          'Box2':[499,322],
-                          'Box3':[132, 327],
-                          'Box4':[341, 584],
-                          'Box5': [15, 582],
-        }
-        self.info_box_place = (39, 101)
-        self.clock_place = (39, 29)
+        self.box_place = {'Box1': [539, 31],
+                          'Box2': [504, 234],
+                          'Box3': [208, 319],
+                          'Box4': [261, 26],
+                          'Box5': [66, 26],
+                          }
+        self.info_box_place = (15, 504)
+        self.clock_place = (15, 442)
         dx,dy = 35,35
         self.rgb = (5, 1, 51)
         self.greendot = Image.open("Images/green_dot.png").resize((dx,dy), Image.ANTIALIAS)
@@ -151,16 +151,16 @@ class IDB_Printer_Line(tk.Frame):
             self.size_dic[f]=[0,0]
             self.uptime_dic[f] = datetime.timedelta(seconds=0)
 
-        self.gauth = GoogleAuth()
-        self.drive = GoogleDrive(self.gauth)
-
-        self.gfile = self.drive.CreateFile({'parents': [{'id': '1vaPbo_ddkGsslCc9z5X4UrprK5ZHago4'}]})
-        # worker = threading.Thread(name='read_printer', target=lambda: self.read_printers())
-        # worker.daemon = True
-        # worker.start()
-        worker = threading.Thread(name='read_printer', target=lambda: self.initial_read())
+        # self.gauth = GoogleAuth()
+        # self.drive = GoogleDrive(self.gauth)
+        #
+        # self.gfile = self.drive.CreateFile({'parents': [{'id': '1vaPbo_ddkGsslCc9z5X4UrprK5ZHago4'}]})
+        worker = threading.Thread(name='read_printer', target=lambda: self.read_printers())
         worker.daemon = True
         worker.start()
+        # worker = threading.Thread(name='read_printer', target=lambda: self.initial_read())
+        # worker.daemon = True
+        # worker.start()
     def read_printers(self):
         self.dlpcs_lines_old_dic, self.ecs_lines_old_dic = {}, {}
         self.dlpcs_lines_new_dic, self.ecs_lines_new_dic = {}, {}
@@ -176,8 +176,8 @@ class IDB_Printer_Line(tk.Frame):
                 except PermissionError as e:
                     csv = pd.DataFrame.from_dict(self.data_dic)
                     csv.to_csv(self.data_file)
-                self.gfile.SetContentFile(self.data_file)
-                self.gfile.Upload()
+                # self.gfile.SetContentFile(self.data_file)
+                # self.gfile.Upload()
                 self.end_of_day = datetime.datetime(year=datetime.datetime.now().year, month=datetime.datetime.now().month, day=datetime.datetime.now().day, hour=23,minute=59, second=59)
                 self.file_date = self.end_of_day.strftime("%m-%d-%Y")
                 self.data_file = f'IDB_Line_data_{self.file_date}.csv'
@@ -187,7 +187,7 @@ class IDB_Printer_Line(tk.Frame):
 
 
             # print(self.parent.winfo_width(), self.parent.winfo_height(),self.bx,self.by)
-            for printer in self.label_place:
+            for printer in self.IP_dic:
                 self.background.paste(self.Warning, self.dot_place[printer])
                 stop=False
                 list_of_lines = []
@@ -372,8 +372,8 @@ class IDB_Printer_Line(tk.Frame):
     def initial_read(self):
         csv = pd.DataFrame.from_dict(self.data_dic)
         csv.to_csv(self.data_file)
-        self.gfile.SetContentFile(self.data_file)
-        self.gfile.Upload()
+        # self.gfile.SetContentFile(self.data_file)
+        # self.gfile.Upload()
         for printer in self.label_place:
             t_finish, t_start,recent_time='','',''
 
@@ -480,8 +480,8 @@ class IDB_Printer_Line(tk.Frame):
         print('finish initial loop')
         csv=pd.DataFrame.from_dict(self.data_dic)
         csv.to_csv(self.data_file)
-        self.gfile.SetContentFile(self.data_file)
-        self.gfile.Upload()
+        # self.gfile.SetContentFile(self.data_file)
+        # self.gfile.Upload()
         self.read_printers()
 
     def read_jira(self,printer):
