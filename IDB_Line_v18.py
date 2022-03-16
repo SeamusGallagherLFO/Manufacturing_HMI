@@ -146,7 +146,7 @@ class IDB_Printer_Line(tk.Frame):
             self.job_dic_short[f]=''
             self.start_dic[f] = ''
             self.print_dic[f] =''
-            self.data_dic[f] = {'Time':[], 'Filename':[], "Status":[], 'Runtime':[], 'Print Count':[]}
+            self.data_dic[f] =  {'Print Number': [], "Start Time": [], 'Filename': [], "Runtime": [], 'Material': [], 'Completion': []}
             self.print_count_dic[f] = 0
             self.time_offset[f]=['','']
             self.size_dic[f]=[0,0]
@@ -156,12 +156,12 @@ class IDB_Printer_Line(tk.Frame):
         # self.drive = GoogleDrive(self.gauth)
         #
         # self.gfile = self.drive.CreateFile({'parents': [{'id': '1vaPbo_ddkGsslCc9z5X4UrprK5ZHago4'}]})
-        worker = threading.Thread(name='read_printer', target=lambda: self.read_printers())
-        worker.daemon = True
-        worker.start()
-        # worker = threading.Thread(name='read_printer', target=lambda: self.initial_read())
+        # worker = threading.Thread(name='read_printer', target=lambda: self.read_printers())
         # worker.daemon = True
         # worker.start()
+        worker = threading.Thread(name='read_printer', target=lambda: self.initial_read())
+        worker.daemon = True
+        worker.start()
     def read_printers(self):
         self.dlpcs_lines_old_dic, self.ecs_lines_old_dic = {}, {}
         self.dlpcs_lines_new_dic, self.ecs_lines_new_dic = {}, {}
@@ -375,97 +375,141 @@ class IDB_Printer_Line(tk.Frame):
         csv.to_csv(self.data_file)
         # self.gfile.SetContentFile(self.data_file)
         # self.gfile.Upload()
-        for printer in self.label_place:
-            t_finish, t_start,recent_time='','',''
-
-            end_time=''
-            N = 100000
-            f_line=True
+        N = 1000000
+        for printer in self.IP_dic:
+            # break
+            # self.data_dic[printer] = {'Print Number': [], "Start Time": [], 'Filename': [], "Runtime": [],
+            #                                'Material': [], 'Completion': []}
             logfile = f'\\\\{self.IP_dic[printer]}/log/dlpcs_core.log'
+            print(printer, logfile)
+            f_line = True
+            t_finish, t_start, recent_time, end_time = '', '', '', ''
+            material_used = []
+            material = 0
+            completion = "Successful"
+            job = None
+            f_mat = [False, False]
+            print_count, uptime = 0, datetime.timedelta(seconds=0)
+            counter = 0
             try:
                 with open(logfile, 'rb') as f:
                     f.seek(0, os.SEEK_END)
                     buffer = bytearray()
                     pointer_location = f.tell()
                     list_of_lines = []
-
                     while pointer_location >= 0:
                         f.seek(pointer_location)
                         pointer_location = pointer_location - 1
                         new_byte = f.read(1)
+                        # print(new_byte)
                         if new_byte == b'\n':
+                            counter += 1
                             try:
-                                list_of_lines.append(buffer.decode()[::-1])
-                            except UnicodeDecodeError as e:
-                                print('bad buffer????')
-                            line = list_of_lines[-1]
-                            buffer = bytearray()
+                                line = buffer.decode()[::-1]
+                                list_of_lines.append(line)
+                            except UnicodeDecodeError:
+                                'bad byte'
+                            # print(buffer.decode()[::-1])
+                            buffer = bytearray()  # Needed to reset line so it doesn't grow endlessly
                             if f_line:
                                 try:
-                                    recent_time = datetime.datetime.strptime(line[7:30],"%Y-%m-%d_%H:%M:%S.%f")
+                                    recent_time = datetime.datetime.strptime(line[7:30], "%Y-%m-%d_%H:%M:%S.%f")
 
-                                    f_line=False
-                                    end_time = recent_time-self.work_day
+                                    f_line = False
+                                    end_time = recent_time - self.work_day
+                                    print('check2')
                                 except ValueError:
                                     pass
+                            # [0;37m2022-03-14_19:59:40.517[0;33m[Dispatcher:I][0;0m[0;37m[32168][0m    [1;30m[0;37mMaterial volume (real) decreased:  1  ( 4 ml total for this print)[0m
+                            # [0;37m2022-03-14_19:59:40.517[0;33m[Dispatcher:I][0;0m[0;37m[32168][0m    [1;30m[0;37mMaterial per layer =  0.0949292[0m
+                            # [0;37m2022-03-15_15:00:07.580[0;33m[Dispatcher:I][0;0m[0;37m[2126][0m    [1;30m[0;37mMaterial per layer =  0.205761 , active pixels =  6462[0m
+                            try:
+                                if f_mat[0]:
+                                    if "Material volume" in line:
+                                        material += int(line.split(" ml total")[-2].split('(')[-1])
+                                        # print(line)
+                                        f_mat[0] = False
+                                    if "per layer" in line and f_mat[1]:
+                                        if "active pixels" in line:
+                                            material += float(line.split('per layer = ')[-1].split(',')[0])
+                                        else:
+                                            material += float(line.split('[0m')[-2].split('=')[-1])
+                                        # print(line)
+                                        f_mat[1] = False
+                            except:
+                                print(traceback.format_exc())
+                            # print(len(buffer.decode()[::-1]),len(line))
+                            if "abort job" in line:
+                                completion = "Aborted"
                             if '/Job/' in line and "Start process build job" in line:
-                                self.job_dic[printer] = line.split('/Job/')[-1].split('/')[0]
-                                self.job_dic[printer] = self.job_dic[printer].split('"')[0]
+                                job = line.split('/Job/')[-1].split('/')[0]
+                                job = job.split('"')[0]
+                                print(line)
                             if "JOB FINISHED" in line:
-
+                                f_mat = [True, True]
                                 for c in range(len(list_of_lines)):
                                     try:
                                         if f_line:
-                                            recent_time = datetime.datetime.strptime(list_of_lines[c][7:30], "%Y-%m-%d_%H:%M:%S.%f")
-
+                                            print('check1')
+                                            recent_time = datetime.datetime.strptime(list_of_lines[c][7:30],
+                                                                                     "%Y-%m-%d_%H:%M:%S.%f")
+                                            end_time = recent_time - self.work_day
                                             f_line = False
-
+                                            print(end_time)
                                         t_finish = datetime.datetime.strptime(list_of_lines[-4][7:30],
                                                                               "%Y-%m-%d_%H:%M:%S.%f")
                                         t_start = datetime.datetime.strptime(list_of_lines[c][7:30],
                                                                              "%Y-%m-%d_%H:%M:%S.%f")
+
                                         break
                                     except ValueError:
                                         continue
                                 # update_data
-                                self.data_dic[printer]['Time'].append(str(t_finish))
-                                self.data_dic[printer]['Filename'].append(self.job_dic[printer])
-                                self.data_dic[printer]['Status'].append('Job Finished')
-                            if end_time=='' or t_start=='':
-                                continue
-                            if "START JOB" in line:
+                                # self.data_dic[printer]['Time'].append(str(t_finish))
+                                # self.data_dic[printer]['Filename'].append(job)
+                                # self.data_dic[printer]['Status'].append('Job Finished')
 
+                            if end_time == '' or t_start == '':
+                                continue
+                            # print(line)
+                            if "START JOB" in line:
                                 for c in range(len(list_of_lines)):
                                     try:
-                                        t_start = datetime.datetime.strptime(list_of_lines[-c][7:30], "%Y-%m-%d_%H:%M:%S.%f")
+                                        t_start = datetime.datetime.strptime(list_of_lines[-c][7:30],
+                                                                             "%Y-%m-%d_%H:%M:%S.%f")
                                         break
                                     except ValueError:
                                         continue
+                                list_of_lines = []
 
-                                print(f"{printer},Job: {self.job_dic[printer]}, started at:{t_start}, print count: {self.print_count_dic[printer]}")
                                 if t_start > end_time:
                                     runtime = t_finish - t_start
-                                    self.print_count_dic[printer] += 1
-                                    #update_data
-                                    self.uptime_dic[printer] = self.uptime_dic[printer] + runtime
-                                    self.data_dic[printer]['Time'].append(str(t_start))
-                                    self.data_dic[printer]['Filename'].append(self.job_dic[printer])
-                                    self.data_dic[printer]['Status'].append('Start Job')
-                                    self.data_dic[printer]['Runtime'] = str(self.uptime_dic[printer])
-                                    self.data_dic[printer]['Print Count'] = self.print_count_dic[printer]
+                                    print_count += 1
+                                    # update_data
+                                    uptime = uptime + runtime
+                                    self.data_dic[printer]['Start Time'].append(str(t_start))
+                                    self.data_dic[printer]['Filename'].append(job)
+                                    self.data_dic[printer]['Runtime'].append(runtime)
+                                    self.data_dic[printer]['Print Number'].append(str(print_count))
+                                    self.data_dic[printer]['Completion'].append(completion)
+                                    self.data_dic[printer]['Material'].append(material)
+                                    print(
+                                        f"{printer},Job: {job}, started at:{t_start}, runtime: {runtime} print count: {print_count}")
+                                    print('material used ml', material)
+                                    material = 0
+                                    completion = "Successful"
+
                                 # try:
                                 #     runtime = t_finish-t_start
-                                #     self.uptime_dic[printer] = self.uptime_dic[printer] + runtime
+                                #     uptime_dic[printer] = uptime_dic[printer] + runtime
                                 # except TypeError:
                                 #     'Printer is active'
 
-
-
-
-                            if len(list_of_lines) >= N or t_start<end_time:
-                                print('finish initial read',printer,'Uptime: ', self.uptime_dic[printer])
-                                print('read until time: ',t_start,'from: ',recent_time, 'should be before: ', end_time)
-                                print(f'{len(list_of_lines)} Lines')
+                            if counter >= N or t_start < end_time:
+                                print('finish initial read', printer, 'Uptime: ', uptime)
+                                print('read until time: ', t_start, 'from: ', recent_time, 'should be before: ',
+                                      end_time)
+                                print(f'{counter} Lines')
                                 del list_of_lines
                                 break
 
@@ -476,15 +520,51 @@ class IDB_Printer_Line(tk.Frame):
                     if len(buffer) > 0:
                         list_of_lines.append(buffer.decode()[::-1])
             except:
-                exc_type, exc_obj, exc_tb = sys.exc_info()
-                print(printer,exc_type,  exc_tb.tb_lineno)
+                print(traceback.format_exc())
         print('finish initial loop')
-        csv=pd.DataFrame.from_dict(self.data_dic)
-        csv.to_csv(self.data_file)
+        self.write_file()
         # self.gfile.SetContentFile(self.data_file)
         # self.gfile.Upload()
         self.read_printers()
+    def write_file(self):
+        datafile = f'IDB_Printer_Data_{self.file_date}'
+        with open(f'{datafile}.csv', 'w') as file:
+            for printer, line in data_dic.items():
+                print(printer, line)
+                file.write(f'{printer}\n')
+                file.write(f'Print Number, Start TimeStamp, Filename, Runtime, Material (ml), Completion\n')
+                number_aborts = 0
+                uptime = datetime.timedelta(seconds=0)
+                material = 0
+                for [prt, srt, fln, run, mtl, cmp] in zip(data_dic[printer]['Print Number'],
+                                                          data_dic[printer]['Start Time'],
+                                                          data_dic[printer]['Filename'], data_dic[printer]['Runtime'],
+                                                          data_dic[printer]['Material'],
+                                                          data_dic[printer]['Completion']):
+                    line = [prt, srt, fln, run, mtl, cmp]
+                    if cmp != "Successful":
+                        number_aborts += 1
+                    uptime += run
+                    print(run)
+                    material += float(mtl)
+                    for c, data in enumerate(line):
+                        # print(data,c)
+                        if not isinstance(data, str):
+                            line[c] = str(data)
+                    file.write(f"{', '.join(line)}\n")
 
+                try:
+                    print('total', uptime)
+                    avg_run = uptime.total_seconds() / len(data_dic[printer]['Runtime'])
+                    avg_run = datetime.timedelta(seconds=avg_run)
+                    avg_mat = material / len(data_dic[printer]['Material'])
+                    print('average', avg_run, avg_mat)
+                    file.write(
+                        f'Total, {len(data_dic[printer]["Print Number"]) - number_aborts},  , {uptime}, {material}\n')
+                    file.write(f'  , , Averages, {avg_run}, {avg_mat}\n')
+                except:
+                    print(traceback.format_exc())
+                file.write('\n')
     def read_jira(self,printer):
         for status,box in zip(["Ready for Cleaning","IDB cleaning", "IDB Rinse","IDB Drying","IDB curing"],self.box_place):
             results = self.jira.search_issues(f'''project = MFG AND (labels is EMPTY OR labels not in (duplicate_tx, test, test_treatment)) AND issuetype = MakeIDB AND "status" = "{status}"''')
@@ -516,7 +596,6 @@ class IDB_Printer_Line(tk.Frame):
             filelist=[]
             for case in results:
                 filename=str(getattr(case.fields, self.nameMap["IDB Print File Name"]))
-                print(filename,case)
                 if filename not in filelist:
                     filelist.append(filename)
 
