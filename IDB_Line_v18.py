@@ -259,22 +259,7 @@ class IDB_Printer_Line(tk.Frame):
                                         if len(self.job_dic[printer])>18:
                                             self.job_dic_short[printer]=self.job_dic[printer][:18]
                                     if "JOB FINISHED" in line:
-                                        print('Job finished', self.status_dic[printer])
 
-                                        if self.status_dic[printer] == "Active":
-                                            print("JOB RESTARTED")
-                                            self.uptime_dic[printer]=self.uptime_dic[printer] + self.runtime_dic[printer]
-                                            runtime = self.t_finish_dic[printer] - self.t_start_dic[printer]
-                                            print(self.uptime_dic[printer])
-                                            self.print_count_dic[printer]+=1
-                                            f_mat = [True,True]
-                                            self.data_dic[printer]['Start TimeStamp'].append(self.t_start_dic)
-                                            self.data_dic[printer]['Filename'].append(self.job_dic[printer])
-                                            self.data_dic[printer]['Runtime'].append(runtime)
-                                            self.data_dic[printer]['Print Number'].append(self.print_count_dic[printer])
-                                            self.data_dic[printer]['Completion'].append(completion)
-
-                                        self.status_dic[printer] = 'Inactive'
                                         for c in range(len(list_of_lines)):
                                             try:
                                                 # self.start_dic[printer] = datetime.datetime.strptime(list_of_lines[-c][7:30], "%Y-%m-%d_%H:%M:%S.%f")
@@ -283,6 +268,23 @@ class IDB_Printer_Line(tk.Frame):
                                                 break
                                             except ValueError:
                                                 continue
+
+                                        if self.status_dic[printer] == "Active":
+                                            print("JOB RESTARTED")
+                                            self.uptime_dic[printer]=self.uptime_dic[printer] + self.runtime_dic[printer]
+                                            runtime = self.t_finish_dic[printer] - self.t_start_dic[printer]
+                                            print(self.uptime_dic[printer])
+                                            self.print_count_dic[printer]= float(self.print_count_dic[printer])+ 1
+                                            f_mat = [True,True]
+                                            self.data_dic[printer]['Start TimeStamp'].append(self.t_start_dic)
+                                            self.data_dic[printer]['Filename'].append(self.job_dic[printer])
+                                            self.data_dic[printer]['Runtime'].append(runtime)
+                                            self.data_dic[printer]['Print Number'].append(self.print_count_dic[printer])
+                                            self.data_dic[printer]['Completion'].append(completion)
+                                            print('Job finished', self.job_dic[printer], runtime)
+
+                                        self.status_dic[printer] = 'Inactive'
+
                                         #self.start_dic[printer] = datetime.datetime.strptime(list_of_lines[-4][7:30], "%Y-%m-%d_%H:%M:%S.%f") #Log date format: 2022-02-03_19:29:11.321datetime.datetime.now()
                                         self.job_dic[printer] = ''
                                         self.background.paste(self.reddot, self.dot_place[printer])
@@ -624,6 +626,7 @@ class IDB_Printer_Line(tk.Frame):
                     line = [prt, srt, fln, run, mtl, cmp]
                     if cmp != "Successful":
                         number_aborts += 1
+                    t= run
                     if isinstance(run, str):
                         try:
                             t = datetime.datetime.strptime(run, "%H:%M:%S.%f")
