@@ -26,7 +26,8 @@ class IDB_Printer_Line(tk.Frame):
                         'IDB-PT-14': '192.168.1.45',
                         'IDB-PT-15': '192.168.1.138',
                         'IDB-PT-16': '192.168.1.93',
-                       'IDB-PT-17': '192.168.1.128'
+                       'IDB-PT-17': '192.168.1.128',
+                        'IDB-PT-18': '192.168.1.84'
         }
         #Initialize attributes
         # s = ttk.Style()
@@ -90,7 +91,7 @@ class IDB_Printer_Line(tk.Frame):
                             'IDB-PT-15': [928, 435],
                             'IDB-PT-16': [1107, 435],
                             'IDB-PT-14': [754, 538],
-                           # 'IDB-PT-04':[928, 538],
+                            'IDB-PT-18':[928, 538],
                             'IDB-PT-17':[1100, 538]
                             }
         self.dot_place = {'IDB-PT-05': [1104, 36],
@@ -100,7 +101,7 @@ class IDB_Printer_Line(tk.Frame):
                           'IDB-PT-11': [750, 36],
                           'IDB-PT-12': [1104, 299],
                           'IDB-PT-13': [756, 391],
-                          #'IDB-PT-04': [926, 669],
+                          'IDB-PT-18': [926, 669],
                           'IDB-PT-14': [761, 669],
                           'IDB-PT-15': [926, 391],
                           'IDB-PT-16': [1104, 391],
@@ -140,8 +141,8 @@ class IDB_Printer_Line(tk.Frame):
         self.work_day = datetime.datetime.now() - self.shift_start
         self.end_of_day = datetime.datetime(year=today.year, month=today.month, day=today.day, hour=23,minute=59, second=59)
         self.file_date = self.end_of_day.strftime("%m-%d-%Y")
-        self.data_file = f'IDB_Line_data_{self.file_date}.csv'
-        for f in self.label_place:
+        self.data_file = f'IDB_Printer_Data_{self.file_date}.csv'
+        for f in self.IP_dic:
             self.status_dic[f] = 'Offline'
             self.job_dic[f] = ''
             self.job_dic_short[f]=''
@@ -161,6 +162,7 @@ class IDB_Printer_Line(tk.Frame):
         # worker = threading.Thread(name='read_printer', target=lambda: self.read_printers())
         # worker.daemon = True
         # worker.start()
+        self.file_found = False
         self.read_file()
         worker = threading.Thread(name='read_printer', target=lambda: self.initial_read())
         worker.daemon = True
@@ -185,7 +187,7 @@ class IDB_Printer_Line(tk.Frame):
                 # self.gfile.Upload()
                 self.end_of_day = datetime.datetime(year=datetime.datetime.now().year, month=datetime.datetime.now().month, day=datetime.datetime.now().day, hour=23,minute=59, second=59)
                 self.file_date = self.end_of_day.strftime("%m-%d-%Y")
-                self.data_file = f'IDB_Line_data_{self.file_date}.csv'
+                self.data_file = f'IDB_Printer_Data_{self.file_date}.csv'
                 for f in self.label_place:
                     self.data_dic[f] =  {'Print Number': [], "Start TimeStamp": [], 'Filename': [], "Runtime": [], 'Material (ml)': [], 'Completion': []}
                     self.print_count_dic[f] = 0
@@ -274,14 +276,15 @@ class IDB_Printer_Line(tk.Frame):
                                             self.uptime_dic[printer]=self.uptime_dic[printer] + self.runtime_dic[printer]
                                             runtime = self.t_finish_dic[printer] - self.t_start_dic[printer]
                                             print(self.uptime_dic[printer])
-                                            self.print_count_dic[printer]= float(self.print_count_dic[printer])+ 1
+                                            self.print_count_dic[printer]= int(self.print_count_dic[printer])+ 1
                                             f_mat = [True,True]
-                                            self.data_dic[printer]['Start TimeStamp'].append(self.t_start_dic)
+                                            self.data_dic[printer]['Start TimeStamp'].append(self.t_start_dic[printer])
                                             self.data_dic[printer]['Filename'].append(self.job_dic[printer])
                                             self.data_dic[printer]['Runtime'].append(runtime)
                                             self.data_dic[printer]['Print Number'].append(self.print_count_dic[printer])
                                             self.data_dic[printer]['Completion'].append(completion)
-                                            print('Job finished', self.job_dic[printer], runtime)
+                                            print('Job finished', self.job_dic[printer], 'Runtime:', runtime)
+                                            self.write_file()
 
                                         self.status_dic[printer] = 'Inactive'
 
@@ -369,7 +372,7 @@ class IDB_Printer_Line(tk.Frame):
                     uptime='No Data'
                     self.status_dic[printer] = 'Offline'
                 #self.strvar_dic[printer].set(f'{printer}\nStatus: {self.status_dic[printer]}\n{self.job_dic[printer]}\nTime In Status: {runtime2}\n')
-                self.image.text((self.label_place[printer][0], self.label_place[printer][1]), f'{printer}\nStatus: {self.status_dic[printer]} #{self.print_count_dic[printer]}\n{self.job_dic_short[printer]}\nStatus Time:{runtime2}\nUptime: {str(uptime)}',
+                self.image.text((self.label_place[printer][0], self.label_place[printer][1]), f'{printer}\nStatus: {self.status_dic[printer]} #{self.print_count_dic[printer]}\n{self.job_dic_short[printer]}\nStatus Time:{runtime2[:9]}\nUptime: {str(uptime)}',
                                 fill=self.rgb, font=self.font)
                 # self.ecs_lines_old_dic[printer] =self.ecs_lines_new_dic[printer]
                 file_time, self.time_now = datetime.datetime.now().strftime("%m-%d-%Y_%H-%M-%S"), datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
@@ -411,10 +414,12 @@ class IDB_Printer_Line(tk.Frame):
             time.sleep(50)
 
     def read_file(self):
+        return
         datafile = f'IDB_Printer_Data_{self.file_date}_test.csv'
         self.data_dic={}
         if not os.path.isfile(datafile):
             self.file_found = False
+            return False
         with open(datafile) as file:
             self.file_found = True
             for line in file:
@@ -439,7 +444,7 @@ class IDB_Printer_Line(tk.Frame):
 
         for printer, values in self.data_dic.items():
             try:
-                self.print_count_dic[printer] = self.data_dic[printer]['Print Number'][-1]
+                self.print_count_dic[printer] = len(self.data_dic[printer]['Print Number'])
                 self.recent_start_time[printer] = datetime.datetime.strptime(self.data_dic[printer]['Start TimeStamp'][0], "%Y-%m-%d %H:%M:%S.%f")
 
             except:
@@ -610,50 +615,53 @@ class IDB_Printer_Line(tk.Frame):
         self.read_printers()
     def write_file(self):
         datafile = f'IDB_Printer_Data_{self.file_date}'
-        with open(f'{datafile}.csv', 'w') as file:
-            for printer, line in self.data_dic.items():
-                print(printer, line)
-                file.write(f'{printer}\n')
-                file.write(f'Print Number, Start TimeStamp, Filename, Runtime, Material (ml), Completion\n')
-                number_aborts = 0
-                uptime = datetime.timedelta(seconds=0)
-                material = 0
-                for [prt, srt, fln, run, mtl, cmp] in zip(self.data_dic[printer]['Print Number'],
-                                                          self.data_dic[printer]['Start TimeStamp'],
-                                                          self.data_dic[printer]['Filename'], self.data_dic[printer]['Runtime'],
-                                                          self.data_dic[printer]['Material (ml)'],
-                                                          self.data_dic[printer]['Completion']):
-                    line = [prt, srt, fln, run, mtl, cmp]
-                    if cmp != "Successful":
-                        number_aborts += 1
-                    t= run
-                    if isinstance(run, str):
-                        try:
-                            t = datetime.datetime.strptime(run, "%H:%M:%S.%f")
-                        except:
-                            t = datetime.datetime.strptime(run, "%H:%M:%S")
-                    run = datetime.timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)
-                    uptime += run
-                    print(run)
-                    material += float(mtl)
-                    for c, data in enumerate(line):
-                        # print(data,c)
-                        if not isinstance(data, str):
-                            line[c] = str(data)
-                    file.write(f"{', '.join(line)}\n")
+        try:
+            with open(f'{datafile}.csv', 'w') as file:
+                for printer, line in self.data_dic.items():
+                    print(printer, line)
+                    file.write(f'{printer}\n')
+                    file.write(f'Print Number, Start TimeStamp, Filename, Runtime, Material (ml), Completion\n')
+                    number_aborts = 0
+                    uptime = datetime.timedelta(seconds=0)
+                    material = 0
+                    for [prt, srt, fln, run, mtl, cmp] in zip(self.data_dic[printer]['Print Number'],
+                                                              self.data_dic[printer]['Start TimeStamp'],
+                                                              self.data_dic[printer]['Filename'], self.data_dic[printer]['Runtime'],
+                                                              self.data_dic[printer]['Material (ml)'],
+                                                              self.data_dic[printer]['Completion']):
+                        line = [prt, srt, fln, run, mtl, cmp]
+                        if cmp != "Successful":
+                            number_aborts += 1
 
-                try:
-                    print('total', uptime)
-                    avg_run = uptime.total_seconds() / len(self.data_dic[printer]['Runtime'])
-                    avg_run = datetime.timedelta(seconds=avg_run)
-                    avg_mat = material / len(self.data_dic[printer]['Material (ml)'])
-                    print('average', avg_run, avg_mat)
-                    file.write(
-                        f'Total, {len(self.data_dic[printer]["Print Number"]) - number_aborts},  , {uptime}, {material}\n')
-                    file.write(f'  , , Averages, {avg_run}, {avg_mat}\n')
-                except:
-                    print(traceback.format_exc())
-                file.write('\n')
+                        if isinstance(run, str):
+                            try:
+                                t = datetime.datetime.strptime(run, "%H:%M:%S.%f")
+                            except:
+                                t = datetime.datetime.strptime(run, "%H:%M:%S")
+                            run = datetime.timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)
+                        uptime += run
+                        print(run)
+                        material += float(mtl)
+                        for c, data in enumerate(line):
+                            # print(data,c)
+                            if not isinstance(data, str):
+                                line[c] = str(data)
+                        file.write(f"{', '.join(line)}\n")
+
+                    try:
+                        print('total', uptime)
+                        avg_run = uptime.total_seconds() / len(self.data_dic[printer]['Runtime'])
+                        avg_run = datetime.timedelta(seconds=avg_run)
+                        avg_mat = material / len(self.data_dic[printer]['Material (ml)'])
+                        print('average', avg_run, avg_mat)
+                        file.write(
+                            f'Total, {len(self.data_dic[printer]["Print Number"]) - number_aborts},  , {uptime}, {material}\n')
+                        file.write(f'  , , Averages, {avg_run}, {avg_mat}\n')
+                    except:
+                        print(traceback.format_exc())
+                    file.write('\n')
+        except:
+            print(traceback.format_exc())
     def read_jira(self,printer):
         for status,box in zip(["Ready for Cleaning","IDB cleaning", "IDB Rinse","IDB Drying","IDB curing"],self.box_place):
             results = self.jira.search_issues(f'''project = MFG AND (labels is EMPTY OR labels not in (duplicate_tx, test, test_treatment)) AND issuetype = MakeIDB AND "status" = "{status}"''')
