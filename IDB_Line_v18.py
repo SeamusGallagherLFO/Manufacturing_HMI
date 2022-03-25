@@ -16,9 +16,9 @@ class IDB_Printer_Line(tk.Frame):
     def __init__(self, parent, image = None, dirs=['Input',],extension='.tif'):
         tk.Frame.__init__(self)
         self.IP_dic = {#'IDB-PT-04': '192.168.1.78',
-                       #'IDB-PT-05': '192.168.1.33',
+                       'IDB-PT-05': '192.168.1.33',
                        'IDB-PT-07': '192.168.1.241',
-                       #'IDB-PT-08': '192.168.1.122',
+                       'IDB-PT-08': '192.168.1.122',
                        'IDB-PT-09': '192.168.1.163',
                        'IDB-PT-11': '192.168.1.178',
                        'IDB-PT-12': '192.168.1.186',
@@ -70,7 +70,7 @@ class IDB_Printer_Line(tk.Frame):
         self.font_clock = ImageFont.truetype("arial.ttf",30)
         self.font = ImageFont.truetype("arial.ttf", 17)
         self.font_box = ImageFont.truetype("arial.ttf", 10)
-        self.font_info = ImageFont.truetype("arial.ttf", 15)
+        self.font_info = ImageFont.truetype("arial.ttf", 14)
         self.original = Image.open("Images/Print_line_flip.jpg")
         self.bx, self.by = self.original.size
         self.background = self.original.copy()
@@ -92,7 +92,7 @@ class IDB_Printer_Line(tk.Frame):
                             'IDB-PT-16': [1107, 435],
                             'IDB-PT-14': [754, 538],
                             'IDB-PT-18':[928, 538],
-                            'IDB-PT-17':[1100, 538]
+                            'IDB-PT-17':[1103, 538]
                             }
         self.dot_place = {'IDB-PT-05': [1104, 36],
                           'IDB-PT-07': [756, 299],
@@ -113,7 +113,7 @@ class IDB_Printer_Line(tk.Frame):
                           'Box4': [261, 26],
                           'Box5': [66, 26],
                           }
-        self.info_box_place = (15, 504)
+        self.info_box_place = (15, 503)
         self.clock_place = (15, 442)
         dx,dy = 35,35
         self.rgb = (5, 1, 51)
@@ -133,7 +133,7 @@ class IDB_Printer_Line(tk.Frame):
         self.job_dic,self.status_dic, self.job_dic_short, self.label_dic = {},{},{},{}
         self.start_dic,self.print_dic,self.dot_dic, self.data_dic = {},{}, {},{}
         self.print_count_dic, self.time_offset,self.size_dic, self.uptime_dic = {},{},{},{}
-        self.t_start_dic, self.t_finish_dic,self.completion_dic = {},{},{}
+        self.t_start_dic, self.t_finish_dic,self.completion_dic, self.material_dic = {},{},{},{}
         self.runtime_dic = {}
         self.database_file = datetime.datetime.now().strftime("%Y%m%d")
         today = datetime.datetime.now()
@@ -150,6 +150,7 @@ class IDB_Printer_Line(tk.Frame):
             self.print_dic[f] =''
             self.data_dic[f] =  {'Print Number': [], "Start TimeStamp": [], 'Filename': [], "Runtime": [], 'Material (ml)': [], 'Completion': []}
             self.print_count_dic[f] = 0
+            self.material_dic[f] = 0.000
             self.time_offset[f]=['','']
             self.size_dic[f]=[0,0]
             self.uptime_dic[f] = datetime.timedelta(seconds=0)
@@ -247,6 +248,7 @@ class IDB_Printer_Line(tk.Frame):
                                                 # print(line)
                                                 f_mat[1] = False
                                             if not f_mat[0] and not f_mat[1]:
+                                                self.material_dic[printer]+=material
                                                 self.data_dic[printer]['Material (ml)'].append(material)
                                                 self.write_file()
                                                 break
@@ -386,8 +388,17 @@ class IDB_Printer_Line(tk.Frame):
             for printer in self.print_dic:
                 if self.status_dic[printer] == "Active":
                     self.background.paste(self.greendot, self.dot_place[printer])
-                if self.status_dic[printer] == "Inactive":
-                    self.background.paste(self.reddot, self.dot_place[printer])
+                # if self.status_dic[printer] == "Inactive":
+                #     self.background.paste(self.reddot, self.dot_place[printer])
+                # runtime = printer_time - self.start_dic[printer]
+                if self.runtime_dic[printer] < datetime.timedelta(minutes=5) and self.status_dic[printer] == 'Inactive':
+                    # self.dot_dic[printer].configure(image=self.hourglass)
+                    self.background.paste(self.hourglass, self.dot_place[printer])
+                if self.runtime_dic[printer] > datetime.timedelta(minutes=5) and self.status_dic[printer] == 'Inactive':
+                    # self.dot_dic[printer].configure(image=self.Warning)
+                    self.background.paste(self.Warning, self.dot_place[printer])
+                if self.runtime_dic[printer] > datetime.timedelta(days=1) and self.status_dic[printer] == 'Inactive':
+                    self.background.paste(self.Unplugged, self.dot_place[printer])
             self.image.text(self.clock_place, f'Time:    {datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}',
                             fill=(230, 16, 16), font=self.font_clock)
             self.canv.delete("all")
@@ -566,8 +577,10 @@ class IDB_Printer_Line(tk.Frame):
                                 if t_start > end_time:
                                     runtime = t_finish - t_start
                                     print_count += 1
+                                    self.print_count_dic[printer] +=1
                                     # update_data
                                     uptime = uptime + runtime
+
                                     if self.file_found:
                                         print(self.recent_start_time[printer])
                                         if (str(t_start) in self.data_dic[printer]['Start TimeStamp'] and job in self.data_dic[printer]['Filename']) or t_start<self.recent_start_time[printer]:
@@ -593,6 +606,7 @@ class IDB_Printer_Line(tk.Frame):
                                 #     'Printer is active'
 
                             if counter >= N or t_start < end_time:
+                                self.uptime_dic[printer] = uptime
                                 print('finish initial read', printer, 'Uptime: ', uptime)
                                 print('read until time: ', t_start, 'from: ', recent_time, 'should be before: ',
                                       end_time)
@@ -614,7 +628,7 @@ class IDB_Printer_Line(tk.Frame):
         # self.gfile.Upload()
         self.read_printers()
     def write_file(self):
-        datafile = f'IDB_Printer_Data_{self.file_date}'
+        datafile = f'Database/IDB_Printer_Data_{self.file_date}'
         try:
             with open(f'{datafile}.csv', 'w') as file:
                 for printer, line in self.data_dic.items():
@@ -640,7 +654,7 @@ class IDB_Printer_Line(tk.Frame):
                                 t = datetime.datetime.strptime(run, "%H:%M:%S")
                             run = datetime.timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)
                         uptime += run
-                        print(run)
+                        #print(run)
                         material += float(mtl)
                         for c, data in enumerate(line):
                             # print(data,c)
@@ -649,11 +663,12 @@ class IDB_Printer_Line(tk.Frame):
                         file.write(f"{', '.join(line)}\n")
 
                     try:
-                        print('total', uptime)
+                        print(printer, 'total', uptime, material)
                         avg_run = uptime.total_seconds() / len(self.data_dic[printer]['Runtime'])
                         avg_run = datetime.timedelta(seconds=avg_run)
                         avg_mat = material / len(self.data_dic[printer]['Material (ml)'])
                         print('average', avg_run, avg_mat)
+                        self.material_dic[printer] = material
                         file.write(
                             f'Total, {len(self.data_dic[printer]["Print Number"]) - number_aborts},  , {uptime}, {material}\n')
                         file.write(f'  , , Averages, {avg_run}, {avg_mat}\n')
@@ -662,6 +677,8 @@ class IDB_Printer_Line(tk.Frame):
                     file.write('\n')
         except:
             print(traceback.format_exc())
+        df = pd.DataFrame.from_dict(self.time_offset)
+        df.to_csv('printer_time_offset.csv')
     def read_jira(self,printer):
         for status,box in zip(["Ready for Cleaning","IDB cleaning", "IDB Rinse","IDB Drying","IDB curing"],self.box_place):
             results = self.jira.search_issues(f'''project = MFG AND (labels is EMPTY OR labels not in (duplicate_tx, test, test_treatment)) AND issuetype = MakeIDB AND "status" = "{status}"''')
@@ -695,8 +712,9 @@ class IDB_Printer_Line(tk.Frame):
                 filename=str(getattr(case.fields, self.nameMap["IDB Print File Name"]))
                 if filename not in filelist:
                     filelist.append(filename)
-
-            boxtext += f'{printer} Available Prints: {len(filelist)}\n'
+            space = ' '* (4-len(str(len(filelist))))
+            space2 = ' '* (10-len(str(round(self.material_dic[printer],2))))
+            boxtext += f'{printer} Available Prints: {len(filelist)},{space}   Resin Used:  {round(self.material_dic[printer],2)}mL,{space2} Prints Completed: {self.print_count_dic[printer]}\n'
 
         self.image.text(self.info_box_place,
                         boxtext,
