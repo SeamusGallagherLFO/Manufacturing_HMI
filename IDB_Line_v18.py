@@ -193,6 +193,8 @@ class IDB_Printer_Line(tk.Frame):
                 for f in self.label_place:
                     self.data_dic[f] =  {'Print Number': [], "Start TimeStamp": [], 'Filename': [], "Runtime": [], 'Material (ml)': [], 'Completion': []}
                     self.print_count_dic[f] = 0
+                    self.uptime_dic[f] = datetime.timedelta(seconds=0)
+                    self.material_dic[f] = 0.000
 
 
             # print(self.parent.winfo_width(), self.parent.winfo_height(),self.bx,self.by)
