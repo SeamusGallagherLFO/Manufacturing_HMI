@@ -154,6 +154,7 @@ class IDB_Printer_Line(tk.Frame):
             self.time_offset[f]=['','']
             self.size_dic[f]=[0,0]
             self.uptime_dic[f] = datetime.timedelta(seconds=0)
+            self.runtime_dic[f] = datetime.timedelta(seconds=0)
             self.t_finish_dic[f], self.t_start_dic[f]='',''
 
         # self.gauth = GoogleAuth()
@@ -349,7 +350,7 @@ class IDB_Printer_Line(tk.Frame):
                             except ValueError:
                                 continue
                         self.size_dic[printer][1]=self.size_dic[printer][0]
-                except FileNotFoundError:
+                except:
                     self.status_dic[printer] = 'Log file not found'
                     self.status_dic[printer] = 'Offline'
                     print(traceback.format_exc())
