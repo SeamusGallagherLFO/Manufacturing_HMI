@@ -23,14 +23,15 @@ class IDB_Printer_Line(tk.Frame):
                        # 'IDB-PT-11': '192.168.1.178',
                        'IDB-PT-12': '192.168.1.186',
                        'IDB-PT-13': '192.168.1.185',
-                        'IDB-PT-14': '192.168.1.45',
-                        'IDB-PT-15': '192.168.1.138',
+                        'IDB-PT-14': '192.168.1.154',
+                        'IDB-PT-15': '192.168.1.148',
                         'IDB-PT-16': '192.168.1.93',
                        'IDB-PT-17': '192.168.1.128',
                         'IDB-PT-18': '192.168.1.84',
                         'IDB-PT-19': '192.168.1.251',
                         'IDB-PT-20': '192.168.1.123',
-                        'IDB-PT-21': '192.168.1.29'
+                        'IDB-PT-21': '192.168.1.32',
+                        'IDB-PT-22': '192.168.1.83'
         }
         #Initialize attributes
         # s = ttk.Style()
@@ -164,14 +165,14 @@ class IDB_Printer_Line(tk.Frame):
         # self.drive = GoogleDrive(self.gauth)
         #
         # self.gfile = self.drive.CreateFile({'parents': [{'id': '1vaPbo_ddkGsslCc9z5X4UrprK5ZHago4'}]})
-        # worker = threading.Thread(name='read_printer', target=lambda: self.read_printers())
-        # worker.daemon = True
-        # worker.start()
-        self.file_found = False
-        self.read_file()
-        worker = threading.Thread(name='read_printer', target=lambda: self.initial_read())
+        worker = threading.Thread(name='read_printer', target=lambda: self.read_printers())
         worker.daemon = True
         worker.start()
+        # self.file_found = False
+        # self.read_file()
+        # worker = threading.Thread(name='read_printer', target=lambda: self.initial_read())
+        # worker.daemon = True
+        # worker.start()
     def read_printers(self):
         self.dlpcs_lines_old_dic, self.ecs_lines_old_dic = {}, {}
         self.dlpcs_lines_new_dic, self.ecs_lines_new_dic = {}, {}
