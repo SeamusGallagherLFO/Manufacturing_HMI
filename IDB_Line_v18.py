@@ -16,18 +16,21 @@ class IDB_Printer_Line(tk.Frame):
     def __init__(self, parent, image = None, dirs=['Input',],extension='.tif'):
         tk.Frame.__init__(self)
         self.IP_dic = {#'IDB-PT-04': '192.168.1.78',
-                       'IDB-PT-05': '192.168.1.33',
+                       # 'IDB-PT-05': '192.168.1.33',
                        'IDB-PT-07': '192.168.1.241',
                        'IDB-PT-08': '192.168.1.122',
-                       'IDB-PT-09': '192.168.1.163',
-                       'IDB-PT-11': '192.168.1.178',
+                       # 'IDB-PT-09': '192.168.1.163',
+                       # 'IDB-PT-11': '192.168.1.178',
                        'IDB-PT-12': '192.168.1.186',
                        'IDB-PT-13': '192.168.1.185',
                         'IDB-PT-14': '192.168.1.45',
                         'IDB-PT-15': '192.168.1.138',
                         'IDB-PT-16': '192.168.1.93',
                        'IDB-PT-17': '192.168.1.128',
-                        'IDB-PT-18': '192.168.1.84'
+                        'IDB-PT-18': '192.168.1.84',
+                        'IDB-PT-19': '192.168.1.251',
+                        'IDB-PT-20': '192.168.1.123',
+                        'IDB-PT-21': '192.168.1.29'
         }
         #Initialize attributes
         # s = ttk.Style()
@@ -81,9 +84,9 @@ class IDB_Printer_Line(tk.Frame):
         self.canv.grid(column=4, row=3)
          #self.canv.create_image(0, 0, image=self.background)
         self.canv.create_image(1, 1, image=self.interface, anchor="nw")
-        self.label_place = {'IDB-PT-11': [750, 83],
-                            'IDB-PT-09': [923, 83],
-                            'IDB-PT-05': [1100, 83],
+        self.label_place = {'IDB-PT-19': [750, 83],
+                            'IDB-PT-21': [923, 83],
+                            'IDB-PT-20': [1100, 83],
                             'IDB-PT-07': [750, 185],
                             'IDB-PT-08': [923, 185],
                             'IDB-PT-12': [1100, 185],
@@ -94,11 +97,11 @@ class IDB_Printer_Line(tk.Frame):
                             'IDB-PT-18':[928, 538],
                             'IDB-PT-17':[1103, 538]
                             }
-        self.dot_place = {'IDB-PT-05': [1104, 36],
+        self.dot_place = {'IDB-PT-19': [750, 36],
+                          'IDB-PT-21': [926, 36],
+                          'IDB-PT-20': [1104, 36],
                           'IDB-PT-07': [756, 299],
                           'IDB-PT-08': [926, 299],
-                          'IDB-PT-09': [926, 36],
-                          'IDB-PT-11': [750, 36],
                           'IDB-PT-12': [1104, 299],
                           'IDB-PT-13': [756, 391],
                           'IDB-PT-18': [926, 669],

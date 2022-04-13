@@ -8,9 +8,10 @@ __pycache__/
 
 #Custom
 *.csv
-#.aes
 *.json
-*.txt
+*.aes
+Database/
+Output/
 
 # Distribution / packaging
 .Python
