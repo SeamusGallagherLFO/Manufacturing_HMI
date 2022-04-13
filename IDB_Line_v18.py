@@ -85,40 +85,40 @@ class IDB_Printer_Line(tk.Frame):
         self.canv.grid(column=4, row=3)
          #self.canv.create_image(0, 0, image=self.background)
         self.canv.create_image(1, 1, image=self.interface, anchor="nw")
-        self.label_place = {'IDB-PT-19': [750, 83],
-                            'IDB-PT-21': [923, 83],
-                            'IDB-PT-20': [1100, 83],
-                            'IDB-PT-07': [750, 185],
-                            'IDB-PT-08': [923, 185],
-                            'IDB-PT-12': [1100, 185],
-                            'IDB-PT-13': [750, 435],
-                            'IDB-PT-15': [928, 435],
-                            'IDB-PT-16': [1107, 435],
-                            'IDB-PT-14': [754, 538],
-                            'IDB-PT-18':[928, 538],
-                            'IDB-PT-17':[1103, 538]
+        self.label_place = {'IDB-PT-19': [728, 84],
+                            'IDB-PT-21': [892, 82],
+                            'IDB-PT-22': [1059, 82],
+                            'IDB-PT-07': [1221, 84],
+                            'IDB-PT-12': [1385, 82],
+                            'IDB-PT-15': [1062, 421],
+                            'IDB-PT-16': [1226, 421],
+                            'IDB-PT-08': [730, 516],
+                            'IDB-PT-17': [895, 517],
+                            'IDB-PT-13': [1062, 517],
+                            'IDB-PT-14':[1226, 519],
+                            'IDB-PT-18':[1391, 517]
                             }
-        self.dot_place = {'IDB-PT-19': [750, 36],
-                          'IDB-PT-21': [926, 36],
-                          'IDB-PT-20': [1104, 36],
-                          'IDB-PT-07': [756, 299],
-                          'IDB-PT-08': [926, 299],
-                          'IDB-PT-12': [1104, 299],
-                          'IDB-PT-13': [756, 391],
-                          'IDB-PT-18': [926, 669],
-                          'IDB-PT-14': [761, 669],
-                          'IDB-PT-15': [926, 391],
-                          'IDB-PT-16': [1104, 391],
-                          'IDB-PT-17': [1117, 669]
+        self.dot_place = {'IDB-PT-19': [730, 39],
+                          'IDB-PT-21': [892, 34],
+                          'IDB-PT-20': [1056, 32],
+                          'IDB-PT-07': [1218, 27],
+                          'IDB-PT-08': [1385, 27],
+                          'IDB-PT-12': [1070, 382],
+                          'IDB-PT-13': [1229, 382],
+                          'IDB-PT-18': [744, 656],
+                          'IDB-PT-14': [909, 652],
+                          'IDB-PT-15': [1073, 651],
+                          'IDB-PT-16': [1237, 656],
+                          'IDB-PT-17': [1404, 654]
                           }
-        self.box_place = {'Box1': [539, 31],
-                          'Box2': [504, 234],
-                          'Box3': [208, 319],
-                          'Box4': [261, 26],
-                          'Box5': [66, 26],
+        self.box_place = {'Box1': [519, 31],
+                          'Box2': [487, 232],
+                          'Box3': [199, 309],
+                          'Box4': [254, 22],
+                          'Box5': [65, 24],
                           }
-        self.info_box_place = (15, 503)
-        self.clock_place = (15, 442)
+        self.info_box_place = (18, 427)
+        self.clock_place = (15, 489)
         dx,dy = 35,35
         self.rgb = (5, 1, 51)
         self.greendot = Image.open("Images/green_dot.png").resize((dx,dy), Image.ANTIALIAS)
