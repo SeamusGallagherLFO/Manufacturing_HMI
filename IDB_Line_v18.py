@@ -18,18 +18,18 @@ class IDB_Printer_Line(tk.Frame):
         self.IP_dic = {#'IDB-PT-04': '192.168.1.78',
                        # 'IDB-PT-05': '192.168.1.33',
                        'IDB-PT-07': '192.168.1.241',
-                       'IDB-PT-08': '192.168.1.122',
+                       'IDB-PT-08': '192.168.1.118',
                        # 'IDB-PT-09': '192.168.1.163',
                        # 'IDB-PT-11': '192.168.1.178',
                        'IDB-PT-12': '192.168.1.186',
                        'IDB-PT-13': '192.168.1.185',
-                        'IDB-PT-14': '192.168.1.154',
+                        'IDB-PT-14': '192.168.1.93',
                         'IDB-PT-15': '192.168.1.148',
-                        'IDB-PT-16': '192.168.1.93',
+                        'IDB-PT-16': '192.168.1.80',
                        'IDB-PT-17': '192.168.1.128',
                         'IDB-PT-18': '192.168.1.84',
                         'IDB-PT-19': '192.168.1.251',
-                        'IDB-PT-20': '192.168.1.123',
+                        # 'IDB-PT-20': '192.168.1.123',
                         'IDB-PT-21': '192.168.1.32',
                         'IDB-PT-22': '192.168.1.83'
         }
@@ -71,11 +71,11 @@ class IDB_Printer_Line(tk.Frame):
         self.frame3.grid(column=0,row=5)
         self.frame4=tk.Frame(master=parent)
         self.frame4.grid(column=0,row=6)
-        self.font_clock = ImageFont.truetype("arial.ttf",30)
-        self.font = ImageFont.truetype("arial.ttf", 17)
+        self.font_clock = ImageFont.truetype("arial.ttf",28)
+        self.font = ImageFont.truetype("arial.ttf", 15)
         self.font_box = ImageFont.truetype("arial.ttf", 10)
-        self.font_info = ImageFont.truetype("arial.ttf", 14)
-        self.original = Image.open("Images/Print_line_flip.jpg")
+        self.font_info = ImageFont.truetype("arial.ttf", 13)
+        self.original = Image.open("Images/print_line_4-13-22.pptm.pptx.jpg")
         self.bx, self.by = self.original.size
         self.background = self.original.copy()
         self.image = ImageDraw.Draw(self.background)
@@ -98,18 +98,18 @@ class IDB_Printer_Line(tk.Frame):
                             'IDB-PT-14':[1226, 519],
                             'IDB-PT-18':[1391, 517]
                             }
-        self.dot_place = {'IDB-PT-19': [730, 39],
+        self.dot_place = {'IDB-PT-19': [730, 34],
                           'IDB-PT-21': [892, 34],
-                          'IDB-PT-20': [1056, 32],
-                          'IDB-PT-07': [1218, 27],
-                          'IDB-PT-08': [1385, 27],
-                          'IDB-PT-12': [1070, 382],
-                          'IDB-PT-13': [1229, 382],
-                          'IDB-PT-18': [744, 656],
-                          'IDB-PT-14': [909, 652],
-                          'IDB-PT-15': [1073, 651],
-                          'IDB-PT-16': [1237, 656],
-                          'IDB-PT-17': [1404, 654]
+                          'IDB-PT-22': [1056, 34],
+                          'IDB-PT-07': [1218, 34],
+                          'IDB-PT-12': [1385, 34],
+                          'IDB-PT-15': [1068, 378],
+                          'IDB-PT-16': [1229, 378],
+                          'IDB-PT-08': [742, 650],
+                          'IDB-PT-17': [907, 650],
+                          'IDB-PT-13': [1073, 650],
+                          'IDB-PT-14': [1237, 650],
+                          'IDB-PT-18': [1402, 650]
                           }
         self.box_place = {'Box1': [519, 31],
                           'Box2': [487, 232],
@@ -117,8 +117,8 @@ class IDB_Printer_Line(tk.Frame):
                           'Box4': [254, 22],
                           'Box5': [65, 24],
                           }
-        self.info_box_place = (18, 427)
-        self.clock_place = (15, 489)
+        self.info_box_place = (15, 489)
+        self.clock_place = (18, 427)
         dx,dy = 35,35
         self.rgb = (5, 1, 51)
         self.greendot = Image.open("Images/green_dot.png").resize((dx,dy), Image.ANTIALIAS)
@@ -165,14 +165,14 @@ class IDB_Printer_Line(tk.Frame):
         # self.drive = GoogleDrive(self.gauth)
         #
         # self.gfile = self.drive.CreateFile({'parents': [{'id': '1vaPbo_ddkGsslCc9z5X4UrprK5ZHago4'}]})
-        worker = threading.Thread(name='read_printer', target=lambda: self.read_printers())
-        worker.daemon = True
-        worker.start()
-        # self.file_found = False
-        # self.read_file()
-        # worker = threading.Thread(name='read_printer', target=lambda: self.initial_read())
+        # worker = threading.Thread(name='read_printer', target=lambda: self.read_printers())
         # worker.daemon = True
         # worker.start()
+        self.file_found = False
+        self.read_file()
+        worker = threading.Thread(name='read_printer', target=lambda: self.initial_read())
+        worker.daemon = True
+        worker.start()
     def read_printers(self):
         self.dlpcs_lines_old_dic, self.ecs_lines_old_dic = {}, {}
         self.dlpcs_lines_new_dic, self.ecs_lines_new_dic = {}, {}
