@@ -476,7 +476,7 @@ class IDB_Printer_Line(tk.Frame):
         csv.to_csv(self.data_file)
         # self.gfile.SetContentFile(self.data_file)
         # self.gfile.Upload()
-        N = 1000000
+        N = 10000000
         for printer in self.IP_dic:
             # break
             # self.data_dic[printer] = {'Print Number': [], "Start Time": [], 'Filename': [], "Runtime": [],
@@ -714,7 +714,9 @@ class IDB_Printer_Line(tk.Frame):
                             f'{status}: {case_string}',
                             fill=self.rgb, font = self.font_box)
         boxtext = ''
-        for printer in self.IP_dic:
+
+        for c,printer in enumerate(self.IP_dic):
+            total = ''
             results = self.jira.search_issues(f'project = MFG AND issuetype = MakeIDB AND "Order Status[Dropdown]" = Active AND status in ("Ready to Print", "Print Next", "Vida Print Start") AND "IDB Tray Printer Id[Dropdown]" = {printer} AND (labels is EMPTY OR labels not in (test_treatment, duplicate_tx, cancelled_order, shop_order)) ORDER BY status DESC')
             filelist=[]
             for case in results:
@@ -723,7 +725,10 @@ class IDB_Printer_Line(tk.Frame):
                     filelist.append(filename)
             space = ' '* (4-len(str(len(filelist))))
             space2 = ' '* (10-len(str(round(self.material_dic[printer],2))))
-            boxtext += f'{printer} Available Prints: {len(filelist)},{space}   Resin Used:  {round(self.material_dic[printer],2)}mL,{space2} Prints Completed: {self.print_count_dic[printer]}\n'
+            if c==0:
+                total = f'Total Prints: {sum([self.print_count_dic[printer] for printer in self.print_count_dic])}'
+            boxtext += f'{printer} Available Prints: {len(filelist)},{space}   Resin Used:  {round(self.material_dic[printer],2)}mL,{space2} Prints Completed: {self.print_count_dic[printer]}         {total}\n'
+
 
         self.image.text(self.info_box_place,
                         boxtext,
