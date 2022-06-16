@@ -21,19 +21,22 @@ class IDB_Printer_Line(tk.Frame):
             # 'IDB-PT-08': '192.168.1.118',
             # 'IDB-PT-09': '192.168.1.163',
             # 'IDB-PT-11': '192.168.1.178',
-            'IDB-PT-12': '192.168.1.186',
+            # 'IDB-PT-12': '192.168.1.186',
             # 'IDB-PT-13': '192.168.1.185',
             'IDB-PT-14': '192.168.1.93',
-            'IDB-PT-15': '192.168.1.148',
+            # 'IDB-PT-15': '192.168.1.148',
             'IDB-PT-16': '192.168.1.80',
             'IDB-PT-17': '192.168.1.128',
-            'IDB-PT-18': '192.168.1.84',
+            # 'IDB-PT-18': '192.168.1.84',
             'IDB-PT-19': '192.168.1.251',
             # 'IDB-PT-20': '192.168.1.123',
             'IDB-PT-21': '192.168.1.32',
             'IDB-PT-22': '192.168.1.83',
             'IDB-PT-23': '192.168.1.118',
-            'IDB-PT-24': '192.168.1.23'
+            'IDB-PT-24': '192.168.1.23',
+            'IDB-PT-26': '192.168.1.170',
+            'IDB-PT-27': '192.168.1.171',
+            'IDB-PT-28': '192.168.1.138'
         }
         #Initialize attributes
         # s = ttk.Style()
@@ -77,7 +80,7 @@ class IDB_Printer_Line(tk.Frame):
         self.font = ImageFont.truetype("arial.ttf", 15)
         self.font_box = ImageFont.truetype("arial.ttf", 10)
         self.font_info = ImageFont.truetype("arial.ttf", 13)
-        self.original = Image.open("Images/print_line_4-13-22.pptm.pptx.jpg")
+        self.original = Image.open("Images/Print_line_GUI2_6-16-22.jpg")
         self.bx, self.by = self.original.size
         self.background = self.original.copy()
         self.image = ImageDraw.Draw(self.background)
@@ -91,27 +94,28 @@ class IDB_Printer_Line(tk.Frame):
                             'IDB-PT-21': [892, 82],
                             'IDB-PT-22': [1059, 82],
                             'IDB-PT-07': [1221, 84],
-                            'IDB-PT-12': [1385, 82],
-                            'IDB-PT-15': [1062, 421],
-                            'IDB-PT-16': [1226, 421],
-                            'IDB-PT-23': [730, 516],
-                            'IDB-PT-17': [895, 517],
-                            'IDB-PT-24': [1062, 517],
-                            'IDB-PT-14': [1226, 519],
-                            'IDB-PT-18': [1391, 517]
+                            'IDB-PT-26': [1385, 82],
+                            # "IDB-PT-25": [1395, 203],
+                            'IDB-PT-28': [1395, 306],
+                            'IDB-PT-16': [1395, 402],
+                            'IDB-PT-17': [730, 516],
+                            'IDB-PT-24': [895, 517],
+                            'IDB-PT-14': [1062, 517],
+                            'IDB-PT-27': [1226, 517],
+                            'IDB-PT-23': [1391, 517]
                             }
         self.dot_place = {'IDB-PT-19': [730, 34],
                           'IDB-PT-21': [892, 34],
                           'IDB-PT-22': [1056, 34],
                           'IDB-PT-07': [1218, 34],
-                          'IDB-PT-12': [1385, 34],
-                          'IDB-PT-15': [1068, 378],
-                          'IDB-PT-16': [1229, 378],
+                          'IDB-PT-26': [1385, 34],
+                          'IDB-PT-28': [1345, 350],
+                          'IDB-PT-16': [1345, 450],
                           'IDB-PT-23': [742, 650],
                           'IDB-PT-17': [907, 650],
                           'IDB-PT-24': [1073, 650],
                           'IDB-PT-14': [1237, 650],
-                          'IDB-PT-18': [1402, 650]
+                          'IDB-PT-27': [1402, 650]
                           }
         self.box_place = {'Box1': [519, 31],
                           'Box2': [487, 232],
@@ -389,7 +393,10 @@ class IDB_Printer_Line(tk.Frame):
                 file_time, self.time_now = datetime.datetime.now().strftime("%m-%d-%Y_%H-%M-%S"), datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
 
                 #self.write_database(printer)
-            self.read_jira(printer)
+            try:
+                self.read_jira(printer)
+            except:
+                print(f'{traceback.format_exc(), datetime.datetime.now()}')
             if self.parent.winfo_width() !=self.bx and self.winfo_height() != self.by:
                 # print('size changed!!!',self.parent.winfo_width()==int(self.parent.winfo_width()))
                 self.bx,self.by = self.parent.winfo_width(),self.parent.winfo_height()
@@ -424,7 +431,7 @@ class IDB_Printer_Line(tk.Frame):
             self.image = ImageDraw.Draw(self.background)
             # self.canv.itemconfig(self.image_on_canvas, image= ImageTk(self.background))
 
-            print('done loop')
+            print('done loop', datetime.datetime.now())
 
             try:
                 csv = pd.DataFrame.from_dict(self.data_dic)
@@ -714,21 +721,23 @@ class IDB_Printer_Line(tk.Frame):
                             f'{status}: {case_string}',
                             fill=self.rgb, font = self.font_box)
         boxtext = ''
-
+        results = self.jira.search_issues(f'project = MFG AND issuetype = MakeIDB AND "Order Status[Dropdown]" = Active AND status in ("Ready to Print", "Print Next") AND (labels is EMPTY OR labels not in (test_treatment, duplicate_tx, cancelled_order, shop_order)) ORDER BY status DESC',maxResults=0)
         for c,printer in enumerate(self.IP_dic):
             total = ''
-            results = self.jira.search_issues(f'project = MFG AND issuetype = MakeIDB AND "Order Status[Dropdown]" = Active AND status in ("Ready to Print", "Print Next", "Vida Print Start") AND "IDB Tray Printer Id[Dropdown]" = {printer} AND (labels is EMPTY OR labels not in (test_treatment, duplicate_tx, cancelled_order, shop_order)) ORDER BY status DESC')
+
             filelist=[]
             for case in results:
-                filename=str(getattr(case.fields, self.nameMap["IDB Print File Name"]))
-                if filename not in filelist:
-                    filelist.append(filename)
+                printerID = str(case.fields.customfield_10052)
+                if printerID==printer:
+                    filename=str(case.fields.customfield_10053)
+                    if filename not in filelist:
+                        filelist.append(filename)
             space = ' '* (4-len(str(len(filelist))))
             space2 = ' '* (10-len(str(round(self.material_dic[printer],2))))
             if c==0:
                 total = f'Total Prints: {sum([self.print_count_dic[printer] for printer in self.print_count_dic])}'
             boxtext += f'{printer} Available Prints: {len(filelist)},{space}   Resin Used:  {round(self.material_dic[printer],2)}mL,{space2} Prints Completed: {self.print_count_dic[printer]}         {total}\n'
-
+            # boxtext += f'{printer}   Resin Used:  {round(self.material_dic[printer], 2)}mL,{space2} Prints Completed: {self.print_count_dic[printer]}         {total}\n'
 
         self.image.text(self.info_box_place,
                         boxtext,
